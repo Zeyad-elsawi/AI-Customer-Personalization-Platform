@@ -1,0 +1,10 @@
+{
+  "generation_date": "2025-09-01T13:59:55.607467",
+  "n_users": 1000,
+  "n_products": 200,
+  "n_events": 5858,
+  "n_sessions": 1564,
+  "date_range_days": 90,
+  "abandonment_rate": 0.3,
+  "voucher_response_rate": 0.15
+}

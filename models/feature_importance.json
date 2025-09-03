@@ -1,0 +1,158 @@
+{
+  "conversion": [
+    {
+      "feature": "feature_0",
+      "importance": 6
+    },
+    {
+      "feature": "feature_13",
+      "importance": 4
+    },
+    {
+      "feature": "feature_17",
+      "importance": 3
+    },
+    {
+      "feature": "feature_11",
+      "importance": 3
+    },
+    {
+      "feature": "feature_2",
+      "importance": 2
+    },
+    {
+      "feature": "feature_14",
+      "importance": 2
+    },
+    {
+      "feature": "feature_7",
+      "importance": 2
+    },
+    {
+      "feature": "feature_1",
+      "importance": 1
+    },
+    {
+      "feature": "feature_18",
+      "importance": 1
+    },
+    {
+      "feature": "feature_19",
+      "importance": 1
+    },
+    {
+      "feature": "feature_8",
+      "importance": 1
+    },
+    {
+      "feature": "feature_3",
+      "importance": 1
+    },
+    {
+      "feature": "feature_9",
+      "importance": 0
+    },
+    {
+      "feature": "feature_12",
+      "importance": 0
+    },
+    {
+      "feature": "feature_6",
+      "importance": 0
+    },
+    {
+      "feature": "feature_5",
+      "importance": 0
+    },
+    {
+      "feature": "feature_15",
+      "importance": 0
+    },
+    {
+      "feature": "feature_16",
+      "importance": 0
+    },
+    {
+      "feature": "feature_4",
+      "importance": 0
+    },
+    {
+      "feature": "feature_10",
+      "importance": 0
+    }
+  ],
+  "voucher_response": [
+    {
+      "feature": "feature_0",
+      "importance": 0.11819936136792204
+    },
+    {
+      "feature": "feature_2",
+      "importance": 0.10203908244578176
+    },
+    {
+      "feature": "feature_13",
+      "importance": 0.08852896474766504
+    },
+    {
+      "feature": "feature_1",
+      "importance": 0.08584029608273967
+    },
+    {
+      "feature": "feature_11",
+      "importance": 0.08007118335793076
+    },
+    {
+      "feature": "feature_14",
+      "importance": 0.06301447263689969
+    },
+    {
+      "feature": "feature_16",
+      "importance": 0.061495846428452156
+    },
+    {
+      "feature": "feature_7",
+      "importance": 0.049570189872906505
+    },
+    {
+      "feature": "feature_9",
+      "importance": 0.04825239369720483
+    },
+    {
+      "feature": "feature_17",
+      "importance": 0.04781377146423092
+    },
+    {
+      "feature": "feature_10",
+      "importance": 0.04584657221228408
+    },
+    {
+      "feature": "feature_5",
+      "importance": 0.04508054080846129
+    },
+    {
+      "feature": "feature_6",
+      "importance": 0.04330719907092037
+    },
+    {
+      "feature": "feature_8",
+      "importance": 0.03973178802955628
+    },
+    {
+      "feature": "feature_3",
+      "importance": 0.03626717713018091
+    },
+    {
+      "feature": "feature_4",
+      "importance": 0.03224076007670665
+    },
+    {
+      "feature": "feature_15",
+      "importance": 0.012700400570157002
+    },
+    {
+      "feature": "feature_12",
+      "importance": 0.0
+    }
+  ]
+}

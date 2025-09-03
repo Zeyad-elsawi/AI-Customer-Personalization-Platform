@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2B Store - AI Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #fff; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; color: #e74c3c; }
+        .cart { background: #e74c3c; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        .nav { background: #2c3e50; color: white; padding: 10px 20px; }
+        .nav ul { display: flex; list-style: none; gap: 30px; }
+        .nav a { color: white; text-decoration: none; }
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 50px 20px; text-align: center; }
+        .products { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .product-image { width: 100%; height: 200px; background: #f0f0f0; border-radius: 5px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+        .product-title { font-weight: bold; margin-bottom: 10px; }
+        .product-price { color: #e74c3c; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .add-to-cart { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; }
+        .coupon-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; display: none; }
+        .coupon-popup.show { display: block; }
+        .coupon-code { background: #e74c3c; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 24px; font-weight: bold; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">2B Store</div>
+        <div class="cart" onclick="showCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+    </div>
+    
+    <nav class="nav">
+        <ul>
+            <li><a href="#">Laptops</a></li>
+            <li><a href="#">Mobiles</a></li>
+            <li><a href="#">TVs</a></li>
+            <li><a href="#">Gaming</a></li>
+        </ul>
+    </nav>
+    
+    <div class="hero">
+        <h1>Welcome to 2B Store</h1>
+        <p>AI-Powered Shopping Experience</p>
+    </div>
+    
+    <div class="products">
+        <h2>Featured Products</h2>
+        <div class="product-grid">
+            <div class="product-card" data-product-id="laptop_001" data-product-category="Electronics" data-product-brand="ASUS" data-product-price="1299">
+                <div class="product-image">💻</div>
+                <div class="product-title">ASUS Laptop i7</div>
+                <div class="product-price">$1,299</div>
+                <button class="add-to-cart" onclick="addToCart('laptop_001', 'ASUS Laptop i7', 1299)">Add to Cart</button>
+            </div>
+            <div class="product-card" data-product-id="phone_001" data-product-category="Electronics" data-product-brand="Apple" data-product-price="999">
+                <div class="product-image">📱</div>
+                <div class="product-title">iPhone 15 Pro</div>
+                <div class="product-price">$999</div>
+                <button class="add-to-cart" onclick="addToCart('phone_001', 'iPhone 15 Pro', 999)">Add to Cart</button>
+            </div>
+            <div class="product-card" data-product-id="headphones_001" data-product-category="Electronics" data-product-brand="Sony" data-product-price="299">
+                <div class="product-image">🎧</div>
+                <div class="product-title">Sony Headphones</div>
+                <div class="product-price">$299</div>
+                <button class="add-to-cart" onclick="addToCart('headphones_001', 'Sony Headphones', 299)">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="coupon-popup" id="coupon-popup">
+        <h3>🎉 Don't Miss Out!</h3>
+        <p>You left items in your cart. Here's a special discount:</p>
+        <div class="coupon-code">SAVE20</div>
+        <p>Get 20% off your order!</p>
+        <button onclick="closeCoupon()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Use Coupon</button>
+    </div>
+
+    <script>
+        let cart = [];
+        let cartTimer = null;
+        let userEvents = [];
+        let sessionStartTime = Date.now();
+        let userId = 'user_' + Math.random().toString(36).substr(2, 9);
+        let sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+        
+        // Smart AI Decision Engine (simplified JavaScript version)
+        class SmartAIDecisionEngine {
+            constructor() {
+                this.userSegments = {
+                    'high_value': { baseConversionRate: 0.4, cartThreshold: 200, maxDiscount: 15 },
+                    'regular': { baseConversionRate: 0.2, cartThreshold: 100, maxDiscount: 20 },
+                    'occasional': { baseConversionRate: 0.1, cartThreshold: 50, maxDiscount: 25 }
+                };
+            }
+            
+            analyzeUserBehavior(events) {
+                const pageViews = events.filter(e => e.event_type === 'page_view').length;
+                const productViews = events.filter(e => e.event_type === 'product_view').length;
+                const cartAdds = events.filter(e => e.event_type === 'add_to_cart').length;
+                
+                const engagementScore = (pageViews * 0.1 + productViews * 0.3 + cartAdds * 0.6);
+                
+                if (engagementScore > 5 && cartAdds > 2) return 'high_value';
+                if (engagementScore > 2 && cartAdds > 0) return 'regular';
+                return 'occasional';
+            }
+            
+            calculateConversionProbability(segment, cartValue, engagementScore, timeOnSite) {
+                const baseRate = this.userSegments[segment].baseConversionRate;
+                const cartMultiplier = 1 + (cartValue / 1000) * 0.5;
+                const engagementMultiplier = 1 + (engagementScore / 10) * 0.3;
+                const timeMultiplier = 1 + Math.min(timeOnSite / 300, 0.5);
+                
+                return Math.min(baseRate * cartMultiplier * engagementMultiplier * timeMultiplier, 0.8);
+            }
+            
+            makeDecision(events, cartValue, timeOnSite) {
+                const segment = this.analyzeUserBehavior(events);
+                const engagementScore = events.reduce((score, e) => {
+                    if (e.event_type === 'page_view') return score + 0.1;
+                    if (e.event_type === 'product_view') return score + 0.3;
+                    if (e.event_type === 'add_to_cart') return score + 0.6;
+                    return score;
+                }, 0);
+                
+                const conversionProb = this.calculateConversionProbability(segment, cartValue, engagementScore, timeOnSite);
+                const segmentInfo = this.userSegments[segment];
+                
+                // Don't send discount if conditions aren't met
+                if (cartValue < segmentInfo.cartThreshold) {
+                    return { shouldSend: false, reason: `Cart value $${cartValue} below threshold $${segmentInfo.cartThreshold} for ${segment} users` };
+                }
+                
+                if (conversionProb > 0.6) {
+                    return { shouldSend: false, reason: `High conversion probability ${(conversionProb*100).toFixed(1)}% - likely to buy without discount` };
+                }
+                
+                // Calculate discount based on cart value and segment
+                let discountPercent = 5; // Base discount
+                
+                if (cartValue >= 300) discountPercent = 15;
+                else if (cartValue >= 150) discountPercent = 12;
+                else if (cartValue >= 100) discountPercent = 10;
+                else discountPercent = 8;
+                
+                // Adjust for segment
+                if (segment === 'occasional') discountPercent *= 1.2;
+                else if (segment === 'high_value') discountPercent *= 0.8;
+                
+                // Adjust for conversion probability
+                if (conversionProb < 0.2) discountPercent *= 1.3;
+                else if (conversionProb < 0.4) discountPercent *= 1.1;
+                
+                discountPercent = Math.min(Math.round(discountPercent), segmentInfo.maxDiscount);
+                
+                return {
+                    shouldSend: true,
+                    discountPercent: discountPercent,
+                    segment: segment,
+                    conversionProb: conversionProb,
+                    reason: `Smart AI: ${segment} user, ${(conversionProb*100).toFixed(1)}% conversion chance, $${cartValue} cart`
+                };
+            }
+        }
+        
+        const aiEngine = new SmartAIDecisionEngine();
+        
+        function addToCart(productId, name, price) {
+            cart.push({ id: productId, name, price });
+            document.getElementById('cart-count').textContent = cart.length;
+            
+            // Get product details from the card
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+            const productCategory = productCard ? productCard.dataset.productCategory : 'Electronics';
+            const productBrand = productCard ? productCard.dataset.productBrand : 'Unknown';
+            
+            // Track event with rich data
+            const event = { 
+                event_type: 'add_to_cart', 
+                product_id: productId, 
+                price: price, 
+                category: productCategory,
+                brand: productBrand,
+                timestamp: new Date().toISOString() 
+            };
+            userEvents.push(event);
+            trackEvent('add_to_cart', productId, price, 1, productCategory, productBrand);
+            
+            // Smart AI decision instead of simple timer
+            clearTimeout(cartTimer);
+            cartTimer = setTimeout(() => {
+                if (cart.length > 0) {
+                    makeSmartDecision();
+                }
+            }, 10000); // Reduced to 10 seconds for demo
+        }
+        
+        function makeSmartDecision() {
+            const cartValue = cart.reduce((total, item) => total + item.price, 0);
+            const timeOnSite = (Date.now() - sessionStartTime) / 1000; // seconds
+            
+            const decision = aiEngine.makeDecision(userEvents, cartValue, timeOnSite);
+            
+            console.log('🤖 AI Decision:', decision);
+            
+            if (decision.shouldSend) {
+                showSmartCoupon(decision);
+            } else {
+                console.log('❌ No discount: ' + decision.reason);
+            }
+        }
+        
+        function showCart() {
+            alert('Cart: ' + cart.map(item => item.name).join(', '));
+        }
+        
+        function showSmartCoupon(decision) {
+            const popup = document.getElementById('coupon-popup');
+            const couponCode = document.getElementById('coupon-code');
+            
+            // Update coupon code with dynamic discount
+            couponCode.textContent = `SAVE${decision.discountPercent}`;
+            
+            // Update popup content to show AI reasoning
+            popup.innerHTML = `
+                <h3>🎯 Personalized Offer Just for You!</h3>
+                <p><strong>AI Analysis:</strong> ${decision.reason}</p>
+                <div class="coupon-code">SAVE${decision.discountPercent}</div>
+                <p>Get ${decision.discountPercent}% off your order!</p>
+                <button onclick="closeCoupon()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Use Coupon</button>
+            `;
+            
+            popup.classList.add('show');
+            trackEvent('coupon_shown', 'smart_ai', decision.discountPercent);
+        }
+        
+        function closeCoupon() {
+            document.getElementById('coupon-popup').classList.remove('show');
+            trackEvent('coupon_used', 'smart_ai', 0);
+        }
+        
+        function trackEvent(eventType, productId, price, quantity = 1, productCategory = null, productBrand = null) {
+            const event = {
+                event_type: eventType,
+                user_id: userId,
+                session_id: sessionId,
+                timestamp: new Date().toISOString(),
+                product_id: productId,
+                price: price,
+                quantity: quantity,
+                product_category: productCategory,
+                product_brand: productBrand,
+                device: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop',
+                country: 'US', // Could be detected from IP
+                user_segment: 'regular' // Could be determined from user history
+            };
+            
+            console.log('AI Tracking:', event);
+            
+            // Send to API
+            fetch('http://localhost:8000/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(event)
+            }).catch(err => console.log('API not running'));
+        }
+        
+        // Track page view and product interactions
+        window.onload = function() {
+            trackEvent('page_view', null, 0);
+            userEvents.push({ event_type: 'page_view', timestamp: new Date().toISOString() });
+        };
+        
+        // Track product views when hovering over products
+        document.addEventListener('DOMContentLoaded', function() {
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const productId = this.dataset.productId;
+                    const productPrice = parseFloat(this.dataset.productPrice);
+                    const productCategory = this.dataset.productCategory;
+                    const productBrand = this.dataset.productBrand;
+                    
+                    trackEvent('product_view', productId, productPrice, 1, productCategory, productBrand);
+                    userEvents.push({ 
+                        event_type: 'product_view', 
+                        product_id: productId, 
+                        price: productPrice,
+                        category: productCategory,
+                        brand: productBrand,
+                        timestamp: new Date().toISOString() 
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
