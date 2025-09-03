@@ -1,5 +1,8 @@
 # 🎯 AI Customer Personalization Platform
 
+<img width="1901" height="918" alt="image" src="https://github.com/user-attachments/assets/37247828-bdea-48f0-924c-431407d618a9" />
+
+
 A comprehensive AI-powered customer personalization platform that tracks user behavior, detects cart abandonment, and automatically sends personalized vouchers using machine learning - similar to MoEngage.
 
 ## 🌟 Key Features
@@ -373,13 +376,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Uses LightGBM for high-performance ML predictions
 - Features comprehensive RFM analysis and behavioral modeling
 
-## 📞 Support
 
-For questions or support, please open an issue on GitHub or contact the development team.
-
----
-
-**Built with ❤️ for better customer experiences**
 
 ## 🎯 Quick Commands
 
